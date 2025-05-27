@@ -3,13 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <title>Calc</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: #f7f8fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 480px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            padding: 32px 24px 24px 24px;
+        }
+        h2 {
+            color: #c03b63;
+            margin-bottom: 18px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        textarea {
+            width: 100%;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border 0.2s;
+            background: #fafbfc;
+            margin-bottom: 10px;
+        }
+        textarea:focus {
+            border-color: #c03b63;
+            outline: none;
+            background: #fff;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px 0;
+            background: linear-gradient(90deg, #c03b63 60%, #e94e77 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(192,59,99,0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #e94e77 60%, #c03b63 100%);
+            box-shadow: 0 4px 16px rgba(192,59,99,0.13);
+        }
+        #output {
+            margin-top: 22px;
+        }
+        #output p {
+            background: #fbeaf1;
+            border-left: 4px solid #c03b63;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+            font-size: 1rem;
+            color: #3a2d3c;
+        }
+        #output strong {
+            color: #c03b63;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 18px 6px 14px 6px;
+            }
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div>
+    <div class="container">
         <h2>Calc</h2>
-        <textarea id="inputText" rows="6" style="width:100%;" placeholder="Paste your paragraph(s) here.."></textarea>
-        <button onclick="countWordsInSentences()" style="margin-top:10px;padding:6px 12px;background:#c03b63;color:white;border:none;border-radius:4px;">Count Words</button>
-        <div id="output" style="margin-top:15px;"></div>
+        <textarea id="inputText" rows="6" placeholder="Paste your paragraph(s) here.."></textarea>
+        <button onclick="countWordsInSentences()">Count Words</button>
+        <div id="output"></div>
     </div>
 
     <script>
