@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calc</title>
+</head>
+<body>
+    <div>
+        <h2>Calc</h2>
+        <textarea id="inputText" rows="6" style="width:100%;" placeholder="Paste your paragraph(s) here.."></textarea>
+        <button onclick="countWordsInSentences()" style="margin-top:10px;padding:6px 12px;background:#c03b63;color:white;border:none;border-radius:4px;">Count Words</button>
+        <div id="output" style="margin-top:15px;"></div>
+    </div>
+
+    <script>
+        function countWordsInSentences() {
+            const text = document.getElementById("inputText").value;
+            const output = document.getElementById("output");
+            output.innerHTML = ""; // Clear previous results
+
+            const sentences = text.match(/[^.!?]+[.!?]*/g);
+
+            if (!sentences) {
+                output.innerHTML = "<p>No sentences found.</p>";
+                return;
+            }
+
+            sentences.forEach((sentence, index) => {
+                const wordCount = sentence.trim().split(/\s+/).filter(word => word).length;
+                const trimmedSentence = sentence.trim();
+                output.innerHTML += `<p><strong>Sentence ${index + 1}</strong>: "${trimmedSentence}"<br>Word Count: ${wordCount}</p>`;
+            });
+        }
+    </script>
+</body>
+</html>
