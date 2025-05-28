@@ -109,9 +109,8 @@
                 const wordCount = sentence.trim().split(/\s+/).filter(word => word).length;
                 const trimmedSentence = sentence.trim();
                 const bgcolor = wordCount <= 22 ? '#28a745' : '#dc3545';
-                const txtcolor = wordCount <= 22 ? '#ffffff' : '#ffffff';
 
-output.innerHTML += `<p style="background-color: ${bgcolor}"><strong style="color: ${txtcolor}">Sentence ${index + 1}</strong>: "${trimmedSentence}"<br>Word Count: ${wordCount}</p>`;
+output.innerHTML += `<p style="background-color: ${bgcolor}"><strong style="color:"white;" ">Sentence ${index + 1}</strong>: "${trimmedSentence}"<br>Word Count: ${wordCount}</p>`;
             });
         }
     </script>
