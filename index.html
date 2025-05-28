@@ -108,8 +108,8 @@
             sentences.forEach((sentence, index) => {
                 const wordCount = sentence.trim().split(/\s+/).filter(word => word).length;
                 const trimmedSentence = sentence.trim();
-                const color = wordCount <= 22 ? '#28a745' : '#dc3545';
-                output.innerHTML += `<p style="color: ${color}"><strong>Sentence ${index + 1}</strong>: "${trimmedSentence}"<br>Word Count: ${wordCount}</p>`;
+                const bgcolor = wordCount <= 22 ? '#28a745' : '#dc3545';
+                output.innerHTML += `<p style="background-color: ${bgcolor}"><strong>Sentence ${index + 1}</strong>: "${trimmedSentence}"<br>Word Count: ${wordCount}</p>`;
             });
         }
     </script>
