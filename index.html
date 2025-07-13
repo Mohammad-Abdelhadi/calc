@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SEO Helper</title>
+  <title>SEO Helper v1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
@@ -88,49 +88,47 @@
   </div>
 
   <script>
-    function countBlocks() {
-      const inputDiv = document.getElementById("inputText");
-      const output = document.getElementById("output");
-      output.innerHTML = "";
+function countBlocks() {
+  const inputDiv = document.getElementById("inputText");
+  const output = document.getElementById("output");
+  output.innerHTML = "";
 
-      const htmlContent = inputDiv.innerHTML;
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(htmlContent, 'text/html');
+  const htmlContent = inputDiv.innerHTML;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlContent, 'text/html');
 
-      let blockIndex = 1;
+  let blockIndex = 1;
 
-      const processAndDisplay = (text, label) => {
-        const trimmed = text.trim();
-        if (!trimmed) return;
+  const processAndDisplay = (text, label) => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
 
-        const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
-        const bgcolor = wordCount <= 22 ? "#28a745" : "#dc3545";
+    const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
+    const bgcolor = wordCount <= 22 ? "#28a745" : "#dc3545";
 
-        output.innerHTML += `<p style="background-color: ${bgcolor}">
-          <strong style="color:white;">Block ${blockIndex++}</strong>: "${trimmed}"<br>
-          Word Count: ${wordCount}
-        </p>`;
-      };
+    output.innerHTML += `<p style="background-color: ${bgcolor}">
+      <strong style="color:white;">Block ${blockIndex++}</strong>: "${trimmed}"<br>
+      Word Count: ${wordCount}
+    </p>`;
+  };
 
-      // Process headers
-      doc.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(h => {
-        processAndDisplay(h.textContent, "Header");
-      });
+  // Process headers
+  doc.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(h => {
+    processAndDisplay(h.textContent, "Header");
+  });
 
-      // Process list items
-      doc.querySelectorAll("li").forEach(li => {
-        processAndDisplay(li.textContent, "Bullet");
-      });
+  // Process list items
+  doc.querySelectorAll("li").forEach(li => {
+    processAndDisplay(li.textContent, "Bullet");
+  });
 
-      // Process paragraphs and split by "."
-      doc.querySelectorAll("p").forEach(p => {
-        const sentences = p.textContent.split(/(?<=\.)\s+/);
-        sentences.forEach(s => processAndDisplay(s, "Paragraph"));
-      });
+  // Process paragraphs and split by "."
+  doc.querySelectorAll("p").forEach(p => {
+    const sentences = p.textContent.split(/(?<=\.)\s+/);
+    sentences.forEach(s => processAndDisplay(s, "Paragraph"));
+  });
 
 }
-      }
-    }
   </script>
 </body>
 </html>
