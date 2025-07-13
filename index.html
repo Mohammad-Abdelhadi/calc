@@ -82,13 +82,13 @@
 <body>
   <div class="container">
     <h2>SEO Sentence Analyzer</h2>
-    <div id="inputText" contenteditable="true" placeholder="Paste your WordPress text content here.."></div>
-    <button onclick="countWordsInBlocks()">Count Words</button>
+    <div id="inputText" contenteditable="true" placeholder="Paste WordPress content here..."></div>
+    <button onclick="countBlocks()">Count Words</button>
     <div id="output"></div>
   </div>
 
   <script>
-    function countWordsInBlocks() {
+    function countBlocks() {
       const inputDiv = document.getElementById("inputText");
       const output = document.getElementById("output");
       output.innerHTML = "";
@@ -97,43 +97,50 @@
       const parser = new DOMParser();
       const doc = parser.parseFromString(htmlContent, 'text/html');
 
-      // Elements to treat as "sentences" (or blocks)
-      const blockTags = ["p", "li", "h1", "h2", "h3", "h4", "h5", "h6"];
-      let blocks = [];
+      let blockIndex = 1;
 
-      blockTags.forEach(tag => {
-        const elements = doc.querySelectorAll(tag);
-        elements.forEach(el => {
-          const content = el.textContent.trim();
-          if (content.length > 0) {
-            blocks.push(content);
-          }
-        });
-      });
+      const processAndDisplay = (text, label) => {
+        const trimmed = text.trim();
+        if (!trimmed) return;
 
-      // Also add standalone text nodes (if user didn’t use HTML tags)
-      const bodyText = doc.body.textContent || "";
-      const fallbackLines = bodyText
-        .split("\n")
-        .map(line => line.trim())
-        .filter(line => line.length > 0 && !blocks.includes(line));
-
-      blocks = blocks.concat(fallbackLines);
-
-      if (blocks.length === 0) {
-        output.innerHTML = "<p>No readable content found.</p>";
-        return;
-      }
-
-      blocks.forEach((block, index) => {
-        const wordCount = block.split(/\s+/).filter(word => word).length;
+        const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
         const bgcolor = wordCount <= 22 ? "#28a745" : "#dc3545";
 
         output.innerHTML += `<p style="background-color: ${bgcolor}">
-          <strong style="color:white;">Block ${index + 1}</strong>: "${block}"<br>
+          <strong style="color:white;">Block ${blockIndex++}</strong>: "${trimmed}"<br>
           Word Count: ${wordCount}
         </p>`;
+      };
+
+      // Process headers
+      doc.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(h => {
+        processAndDisplay(h.textContent, "Header");
       });
+
+      // Process list items
+      doc.querySelectorAll("li").forEach(li => {
+        processAndDisplay(li.textContent, "Bullet");
+      });
+
+      // Process paragraphs and split by "."
+      doc.querySelectorAll("p").forEach(p => {
+        const sentences = p.textContent.split(/(?<=\.)\s+/);
+        sentences.forEach(s => processAndDisplay(s, "Paragraph"));
+      });
+
+      // Handle loose text not wrapped in tags
+      const walker = document.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, null, false);
+      let textNode;
+      while (textNode = walker.nextNode()) {
+        const parentTag = textNode.parentElement?.tagName;
+        if (!['P','LI','H1','H2','H3','H4','H5','H6'].includes(parentTag)) {
+          const text = textNode.textContent.trim();
+          if (text) {
+            const sentences = text.split(/(?<=\.)\s+/);
+            sentences.forEach(s => processAndDisplay(s, "Loose"));
+          }
+        }
+      }
     }
   </script>
 </body>
