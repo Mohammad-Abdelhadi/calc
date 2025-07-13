@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SEO Helper v1</title>
+  <title>SEO Helper v2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
@@ -112,22 +112,21 @@ function countBlocks() {
     </p>`;
   };
 
-  // Process headers
-  doc.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(h => {
-    processAndDisplay(h.textContent, "Header");
-  });
+  // 🔁 Go through elements in order, not grouped by tag
+  doc.body.querySelectorAll("*").forEach(el => {
+    const tag = el.tagName.toUpperCase();
+    const content = el.textContent.trim();
+    if (!content) return;
 
-  // Process list items
-  doc.querySelectorAll("li").forEach(li => {
-    processAndDisplay(li.textContent, "Bullet");
+    if (["H1", "H2", "H3", "H4", "H5", "H6"].includes(tag)) {
+      processAndDisplay(content, "Header");
+    } else if (tag === "LI") {
+      processAndDisplay(content, "Bullet");
+    } else if (tag === "P") {
+      const sentences = content.split(/(?<=\.)\s+/);
+      sentences.forEach(s => processAndDisplay(s, "Paragraph"));
+    }
   });
-
-  // Process paragraphs and split by "."
-  doc.querySelectorAll("p").forEach(p => {
-    const sentences = p.textContent.split(/(?<=\.)\s+/);
-    sentences.forEach(s => processAndDisplay(s, "Paragraph"));
-  });
-
 }
   </script>
 </body>
