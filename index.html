@@ -92,27 +92,42 @@
         <div id="output"></div>
     </div>
 
-    <script>
-        function countWordsInSentences() {
-            const text = document.getElementById("inputText").value;
-            const output = document.getElementById("output");
-            output.innerHTML = ""; // Clear previous results
+<script>
+    function countWordsInSentences() {
+        const text = document.getElementById("inputText").value;
+        const output = document.getElementById("output");
+        output.innerHTML = ""; // Clear previous results
 
-            const sentences = text.match(/[^.!?]+[.!?]*/g);
+        // Split into lines and filter out bullets and likely headers
+        const lines = text.split('\n').filter(line => {
+            const trimmed = line.trim();
+            // Skip empty lines, bullet points, and headers
+            return (
+                trimmed &&
+                !/^[-*•\d]+\s/.test(trimmed) &&      // bullets or numbered items
+                !/^[A-Z\s:]{2,}$/.test(trimmed) &&   // all caps headers
+                !/^\s*(#{1,6}|<h[1-6]>).*<\/?h[1-6]?>?\s*$/i.test(trimmed) // markdown or HTML headers
+            );
+        });
 
-            if (!sentences) {
-                output.innerHTML = "<p>No sentences found.</p>";
-                return;
-            }
+        const cleanedText = lines.join(' ');
 
-            sentences.forEach((sentence, index) => {
-                const wordCount = sentence.trim().split(/\s+/).filter(word => word).length;
-                const trimmedSentence = sentence.trim();
-                const bgcolor = wordCount <= 22 ? '#28a745' : '#dc3545';
+        // Match sentences
+        const sentences = cleanedText.match(/[^.!?]+[.!?]+/g);
 
-output.innerHTML += `<p style="background-color: ${bgcolor}"><strong style="color:"white;" ">Sentence ${index + 1}</strong>: "${trimmedSentence}"<br>Word Count: ${wordCount}</p>`;
-            });
+        if (!sentences) {
+            output.innerHTML = "<p>No sentences found.</p>";
+            return;
         }
-    </script>
+
+        sentences.forEach((sentence, index) => {
+            const wordCount = sentence.trim().split(/\s+/).filter(word => word).length;
+            const trimmedSentence = sentence.trim();
+            const bgcolor = wordCount <= 22 ? '#28a745' : '#dc3545';
+
+            output.innerHTML += `<p style="background-color: ${bgcolor}"><strong style="color:white;">Sentence ${index + 1}</strong>: "${trimmedSentence}"<br>Word Count: ${wordCount}</p>`;
+        });
+    }
+</script>
 </body>
 </html>
