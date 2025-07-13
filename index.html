@@ -129,17 +129,19 @@
       });
 
       // Handle loose text not wrapped in tags
-      const walker = document.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, null, false);
-      let textNode;
-      while (textNode = walker.nextNode()) {
-        const parentTag = textNode.parentElement?.tagName;
-        if (!['P','LI','H1','H2','H3','H4','H5','H6'].includes(parentTag)) {
-          const text = textNode.textContent.trim();
-          if (text) {
-            const sentences = text.split(/(?<=\.)\s+/);
-            sentences.forEach(s => processAndDisplay(s, "Loose"));
-          }
-        }
+// 🔴 DELETE THIS PART TO FIX DUPLICATES:
+const walker = document.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, null, false);
+let textNode;
+while (textNode = walker.nextNode()) {
+  const parentTag = textNode.parentElement?.tagName;
+  if (!['P','LI','H1','H2','H3','H4','H5','H6'].includes(parentTag)) {
+    const text = textNode.textContent.trim();
+    if (text) {
+      const sentences = text.split(/(?<=\.)\s+/);
+      sentences.forEach(s => processAndDisplay(s, "Loose"));
+    }
+  }
+}
       }
     }
   </script>
