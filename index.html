@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>SEO Helper</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       background: #f7f8fa;
@@ -37,6 +37,7 @@
       background: #fafbfc;
       margin-bottom: 10px;
       overflow-y: auto;
+      white-space: pre-wrap;
     }
     #inputText:focus {
       border-color: #c03b63;
@@ -76,63 +77,62 @@
     #output strong {
       color: #c03b63;
     }
-    #inputText[contenteditable="true"] {
-      white-space: pre-wrap;
-    }
-    @media (max-width: 600px) {
-      .container {
-        padding: 18px 6px 14px 6px;
-      }
-      h2 {
-        font-size: 1.3rem;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>SEO Sentence Analyzer</h2>
-    <div id="inputText" contenteditable="true" placeholder="Paste or write HTML/text content here.."></div>
-    <button onclick="countWordsInSentences()">Count Words</button>
+    <div id="inputText" contenteditable="true" placeholder="Paste your WordPress text content here.."></div>
+    <button onclick="countWordsInBlocks()">Count Words</button>
     <div id="output"></div>
   </div>
 
   <script>
-    function countWordsInSentences() {
+    function countWordsInBlocks() {
       const inputDiv = document.getElementById("inputText");
       const output = document.getElementById("output");
-      output.innerHTML = ""; // Clear previous results
+      output.innerHTML = "";
 
-      // Get raw HTML input
       const htmlContent = inputDiv.innerHTML;
-
-      // Create a temporary DOM parser
       const parser = new DOMParser();
       const doc = parser.parseFromString(htmlContent, 'text/html');
 
-      // Remove bullets, headers, and list items
-      const tagsToIgnore = ['H1','H2','H3','H4','H5','H6','UL','OL','LI'];
-      tagsToIgnore.forEach(tag => {
-        doc.querySelectorAll(tag).forEach(el => el.remove());
+      // Elements to treat as "sentences" (or blocks)
+      const blockTags = ["p", "li", "h1", "h2", "h3", "h4", "h5", "h6"];
+      let blocks = [];
+
+      blockTags.forEach(tag => {
+        const elements = doc.querySelectorAll(tag);
+        elements.forEach(el => {
+          const content = el.textContent.trim();
+          if (content.length > 0) {
+            blocks.push(content);
+          }
+        });
       });
 
-      // Extract only meaningful visible text (e.g., paragraphs)
-      const visibleText = doc.body.textContent || "";
+      // Also add standalone text nodes (if user didn’t use HTML tags)
+      const bodyText = doc.body.textContent || "";
+      const fallbackLines = bodyText
+        .split("\n")
+        .map(line => line.trim())
+        .filter(line => line.length > 0 && !blocks.includes(line));
 
-      // Sentence segmentation
-      const sentences = visibleText.match(/[^.!?]+[.!?]+/g);
+      blocks = blocks.concat(fallbackLines);
 
-      if (!sentences) {
-        output.innerHTML = "<p>No sentences found.</p>";
+      if (blocks.length === 0) {
+        output.innerHTML = "<p>No readable content found.</p>";
         return;
       }
 
-      sentences.forEach((sentence, index) => {
-        const wordCount = sentence.trim().split(/\s+/).filter(word => word).length;
-        const trimmedSentence = sentence.trim();
-        const bgcolor = wordCount <= 22 ? '#28a745' : '#dc3545';
+      blocks.forEach((block, index) => {
+        const wordCount = block.split(/\s+/).filter(word => word).length;
+        const bgcolor = wordCount <= 22 ? "#28a745" : "#dc3545";
 
-        output.innerHTML += `<p style="background-color: ${bgcolor}"><strong style="color:white;">Sentence ${index + 1}</strong>: "${trimmedSentence}"<br>Word Count: ${wordCount}</p>`;
+        output.innerHTML += `<p style="background-color: ${bgcolor}">
+          <strong style="color:white;">Block ${index + 1}</strong>: "${block}"<br>
+          Word Count: ${wordCount}
+        </p>`;
       });
     }
   </script>
