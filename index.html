@@ -81,14 +81,14 @@
 </head>
 <body>
   <div class="container">
-    <h2>SEO Sentence Analyzer v1</h2>
+    <h2>SEO Sentence Analyzer v2</h2>
     <div id="inputText" contenteditable="true" placeholder="Paste WordPress content here..."></div>
-    <button onclick="countBlocks()">Count Words</button>
+    <button onclick="analyzeText()">Analyze Sentences</button>
     <div id="output"></div>
   </div>
 
   <script>
-function countBlocks() {
+function analyzeText() {
   const inputDiv = document.getElementById("inputText");
   const output = document.getElementById("output");
   output.innerHTML = "";
@@ -107,23 +107,30 @@ function countBlocks() {
     const bgcolor = wordCount <= 22 ? "#28a745" : "#dc3545";
 
     output.innerHTML += `<p style="background-color: ${bgcolor}">
-      <strong style="color:white;">Block ${blockIndex++}</strong>: "${trimmed}"<br>
+      <strong style="color:white;">${label} ${blockIndex++}</strong>: "${trimmed}"<br>
       Word Count: ${wordCount}
     </p>`;
   };
 
-  // 🔁 Go through elements in order, not grouped by tag
+  const splitIntoSentences = (text) => {
+    return text.match(/[^.!?]+[.!?]+(\s|$)/g) || [text]; // fallback to whole text if no sentence found
+  };
+
   doc.body.querySelectorAll("*").forEach(el => {
     const tag = el.tagName.toUpperCase();
     const content = el.textContent.trim();
     if (!content) return;
 
+    let sentences = [];
+
     if (["H1", "H2", "H3", "H4", "H5", "H6"].includes(tag)) {
-      processAndDisplay(content, "Header");
+      sentences = splitIntoSentences(content);
+      sentences.forEach(s => processAndDisplay(s, "Header"));
     } else if (tag === "LI") {
-      processAndDisplay(content, "Bullet");
+      sentences = splitIntoSentences(content);
+      sentences.forEach(s => processAndDisplay(s, "List Item"));
     } else if (tag === "P") {
-      const sentences = content.split(/(?<=\.)\s+/);
+      sentences = splitIntoSentences(content);
       sentences.forEach(s => processAndDisplay(s, "Paragraph"));
     }
   });
